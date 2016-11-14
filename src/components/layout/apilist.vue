@@ -7,11 +7,10 @@
 	    		<label for="{{api.href}}">{{api.href}}</label><button>编辑</button>
 	    	</li>
 	    </ul>
-	    <span>Checked names:{{ choosedApiArr }}</span>
 		<div class="btn" v-on:click="showDialog"><button name="deleteApi">删除</button><button name="newCase">新建</button><button name="executeApi">执行</button></div>
 	</form>
-	<delete-dialog :show.sync="showDeleteDialog" :choosedapiarr="choosedApiArr" v-if="showDeleteDialog"></delete-dialog>
-	<creat-dialog :show.sync="showCreatDialog" v-if="showCreatDialog"></creat-dialog>
+	<delete-dialog :show.sync="showDeleteDialog" :choosedapiarr="choosedApiArr" v-show="showDeleteDialog"></delete-dialog>
+	<creat-dialog :show.sync="showCreatDialog" :choosedapiarr="choosedApiArr" v-show="showCreatDialog"></creat-dialog>
 </template>
 
 <script>
@@ -34,11 +33,11 @@
 			creatDialog
 		},
 		ready (){
+			
 			apilistEvent.on('update',(data,index)=>{
 				this.apilist = data;
 				this.caseIndex = index;
-				console.log(this.apilist + '初始化索引' + this.caseIndex);
-
+                this.choosedApiArr.splice(0,this.choosedApiArr.length)
 			})
 		},
 		methods : {
@@ -47,7 +46,7 @@
 					alert("请选择要删除的api")
 				}else{
 					this.showDeleteDialog = true;
-					apilistEvent.emit('choose',this.apilist,this.caseIndex)
+					apilistEvent.emit('choose',this.caseIndex)
 				}
 			},
 			creatUsecase : function(){
@@ -55,14 +54,15 @@
 					alert("选择的api不能为空")
 				}else{
 					this.showCreatDialog = true;
-					apilistEvent.emit('choose',this.apilist,this.caseIndex)
+					apilistEvent.emit('choose',this.caseIndex)
 				}
 			},
 			execApi : function(){
 				console.log("执行API")
 			},
 			showDialog : function(event){
-				event.preventDefault()
+				event.preventDefault();
+				
                 switch(event.target.name)
                 {
                 	case 'deleteApi':
@@ -77,9 +77,6 @@
                 }
 
 			}
-			// chooseApi : function(event,index){
-                // if(event.target.){}
-			// }
 		}
 	}
 </script>

@@ -14,11 +14,10 @@
 	export default{
 		data : function(){
 			return {
-		    	choosedApiArr: [],
 				cases:[
                 { 
                 	name: 'case1' ,
-                	apilist: [{ href: '12323'},{ href: '1231'}]
+                	apilist: [{ href: '12323'},{ href: '1231'},{ href: '1231'},{ href: '1231'}]
                 },
                 {   name: 'case2' , 
                     apilist: [{ href: '1235'}]},
@@ -30,15 +29,23 @@
 			}
 		},
 		ready() {
-			apilistEvent.on('delete',(data,index)=>{
+			
+			apilistEvent.on('delete',(index,choosedapiarr)=>{
+				choosedapiarr.reverse();
+                for(var i = 0;i<choosedapiarr.length;i++){
+					this.cases[index].apilist.splice(choosedapiarr[i], 1)
+				 };
 
-                for(var i = 0;i<data.length;i++){
-					this.cases[index].apilist.splice(this.choosedApiArr[i], 1)
-				 }
 			});
-			apilistEvent.on('create',(data,index,name)=>{
-                console.log('create' + data);
-                this.cases.push({ name , data});
+			apilistEvent.on('create',(index,name,choosedapiarr)=>{
+                console.log('index' + index + 'name' + name + 'choosedapiarr' + choosedapiarr);
+                let newApiList = [];
+                for( let i = 0;i < choosedapiarr.length;i++){
+                	let apilistIndex = choosedapiarr[i];
+                	newApiList.push({href: this.cases[index].apilist[apilistIndex].href});
+                }
+                console.log(newApiList);
+                this.cases.push({ name , apilist: newApiList});
 			})
 		},
 		methods: {
